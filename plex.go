@@ -59,15 +59,15 @@ func (p *Plex) GetPlaylists() ([]PMSPlaylist, error) {
 	return response.Playlists, nil
 }
 
-func (p *Plex) GetPlaylistInfo(playlistID string) ([]PMSPlaylistInfo, error) {
+func (p *Plex) GetPlaylistInfo(playlistID string) (*Metadata, error) {
 	url := fmt.Sprintf("%s/playlists/%s/items/?X-Plex-Token=%s", p.URL, playlistID, p.Token)
 	resp, err := p.get(url)
 	if err != nil {
-		return PMSPlaylistInfo{}, err
+		return &Metadata{}, err
 	}
-	response := &PlaylistInfo{}
-	if err := xml.NewDecoder(resp.Body).Decode(respone); err != nil {
-		return PMSPlaylistInfo{}, err
+	response := &Metadata{}
+	if err := xml.NewDecoder(resp.Body).Decode(response); err != nil {
+		return &Metadata{}, err
 	}
 	return response, err
 }
