@@ -2,6 +2,7 @@ package plex
 
 import (
 	"encoding/xml"
+	"errors"
 	"fmt"
 	"net/http"
 	"time"
@@ -52,6 +53,7 @@ func (p *Plex) GetPlaylists() ([]PMSPlaylist, error) {
 		return []PMSPlaylist{}, err
 	}
 	defer resp.Body.Close()
+
 	response := &PlaylistResponse{}
 	if err := xml.NewDecoder(resp.Body).Decode(response); err != nil {
 		return []PMSPlaylist{}, err
@@ -59,15 +61,15 @@ func (p *Plex) GetPlaylists() ([]PMSPlaylist, error) {
 	return response.Playlists, nil
 }
 
-func (p *Plex) GetPlaylistInfo(playlistID string) (*Metadata, error) {
+func (p *Plex) GetPlaylistInfo(playlistID string) (*PMSPlaylistInfo, error) {
 	url := fmt.Sprintf("%s/playlists/%s/items/?X-Plex-Token=%s", p.URL, playlistID, p.Token)
 	resp, err := p.get(url)
 	if err != nil {
-		return &Metadata{}, err
+		return &PMSPlaylistInfo{}, err
 	}
-	response := &Metadata{}
+	response := &PMSPlaylistInfo{}
 	if err := xml.NewDecoder(resp.Body).Decode(response); err != nil {
-		return &Metadata{}, err
+		return &PMSPlaylistInfo{}, err
 	}
 	return response, err
 }
@@ -85,6 +87,9 @@ func (p *Plex) get(url string) (*http.Response, error) {
 
 	if err != nil {
 		return &http.Response{}, err
+	}
+	if resp.StatusCode == 401 {
+		return &http.Response{}, errors.New("Unauthorized")
 	}
 
 	return resp, nil
