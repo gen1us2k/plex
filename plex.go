@@ -23,8 +23,10 @@ func New(token string) *Plex {
 	return &Plex{
 		Token: token,
 		HTTPClient: &http.Client{
-			Timeout:         3 * time.Second,
-			TLSClientConfig: &tls.Config{InsecureSkipVerify: true},
+			Timeout: 3 * time.Second,
+			Transport: &http.Transport{
+				TLSClientConfig: &tls.Config{InsecureSkipVerify: true},
+			},
 		},
 	}
 }
