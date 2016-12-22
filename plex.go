@@ -36,6 +36,8 @@ func (p *Plex) SetURL(url string) {
 func (p *Plex) SetToken(token string) {
 	p.Token = token
 }
+
+// GetServers returns a list of your plex servers
 func (p *Plex) GetServers() ([]PMSServer, error) {
 	url := fmt.Sprintf("%s/pms/servers.xml?X-Plex-Token=%s", plexURL, p.Token)
 	resp, err := p.get(url)
@@ -64,6 +66,7 @@ func (p *Plex) GetPlaylists() ([]PMSPlaylist, error) {
 	}
 	return response.Playlists, nil
 }
+
 
 func (p *Plex) GetPlaylistInfo(playlistID string) (*PMSPlaylistInfo, error) {
 	url := fmt.Sprintf("%s/playlists/%s/items/?X-Plex-Token=%s", p.URL, playlistID, p.Token)
@@ -97,4 +100,18 @@ func (p *Plex) get(url string) (*http.Response, error) {
 	}
 
 	return resp, nil
+}
+
+func defaultHeaders() headers {
+	return headers{
+		Platform:        "Linux",
+		PlatformVersion: "0.0.0",
+		Product:         "Go Plex Client",
+		Version:         "0.0.1",
+		Device:          "Ololo ",
+		ContainerSize:   "Plex-Container-Size=50",
+		ContainerStart:  "X-Plex-Container-Start=0",
+		Accept:          "application/json",
+		ContentType:     "application/json",
+	}
 }

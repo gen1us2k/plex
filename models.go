@@ -126,4 +126,18 @@ type (
 		XMLName   xml.Name      `xml:"MediaContainer"`
 		Playlists []PMSPlaylist `xml:"Playlist"`
 	}
+	headers struct {
+		Platform         string
+		PlatformVersion  string
+		Provides         string
+		ClientIdentifier string
+		Product          string
+		Version          string
+		Device           string
+		ContainerSize    string
+		ContainerStart   string
+		Token            string
+		Accept           string
+		ContentType      string
+	}
 )
